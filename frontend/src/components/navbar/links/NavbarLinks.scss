@@ -1,0 +1,17 @@
+
+ul.links-container {
+    display: flex;
+    gap: 5px;
+    li {
+      display: flex;
+      text-align: center;
+      list-style: none;
+      padding: 5px 10px;
+      cursor: pointer;
+      border-radius: 10px;
+      transition: background-color .15s linear;
+    }
+    :hover {  
+      background-color: aliceblue;
+    }
+  }

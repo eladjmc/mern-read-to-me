@@ -1,0 +1,1 @@
+this folder should hold the constants for the project
