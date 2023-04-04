@@ -4,9 +4,6 @@ import React from 'react';
 const WelcomePage = () => {
     return (
         <>
-            <div>
-                <Button variant='contained'>Hello World</Button>
-            </div>
             <div>WelcomePage</div>
         </>
     );

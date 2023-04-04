@@ -29,7 +29,7 @@ const router = createBrowserRouter([
 ]);
 
 function App() {
-    const {theme} = useGlobalTheme()
+    const {theme, setThemeMod} = useGlobalTheme()
     return (
         <ThemeProvider theme={theme}>
             <CssBaseline enableColorScheme />

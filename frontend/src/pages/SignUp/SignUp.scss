@@ -1,4 +1,4 @@
-.login-page {
+.sign-up-page {
     display: grid;
     grid-template-columns: 1fr 1fr;
     height: 100vh;
@@ -19,7 +19,7 @@
   }
   
   @media screen and (max-width: 768px) {
-    .login-page {
+    .sign-up-page {
       grid-template-columns: 1fr;
       grid-template-rows: 1fr 1fr;
     }

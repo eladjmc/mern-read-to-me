@@ -1,0 +1,11 @@
+.error-msg{
+    margin: 0;
+    text-align: center;
+    color: rgb(192, 55, 55);
+    font-weight: 500;
+    opacity: 0;
+    transition: opacity .2s linear;
+}
+.text-show {
+    opacity: 1;
+}
