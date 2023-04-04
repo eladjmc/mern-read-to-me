@@ -1,4 +1,5 @@
 import react from 'react';
+import './styles/App.css'
 import LoginPage from './pages/LoginPage/LoginPage';
 import ErrorPage from './pages/ErrorPage/ErrorPage';
 import WelcomePage from './pages/WelcomePage/WelcomePage';

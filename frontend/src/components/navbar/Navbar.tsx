@@ -14,75 +14,57 @@ import FormGroup from "@mui/material/FormGroup";
 import MenuItem from "@mui/material/MenuItem";
 import Menu from "@mui/material/Menu";
 import { useGlobalTheme } from "../../context/ThemeContext";
+import { useNavigate } from "react-router";
+import { RTMSession } from "../../services/RTMSession";
 
 const Navbar = () => {
   const [auth, setAuth] = React.useState(true);
-  const [anchorEl, setAnchorEl] = React.useState<null | HTMLElement>(null);
   const { toggleTheme } = useGlobalTheme();
+  const navigate = useNavigate();
+  const { setThemeMod } = useGlobalTheme();
 
   const handleChange = (event: React.ChangeEvent<HTMLInputElement>) => {
     setAuth(event.target.checked);
     toggleTheme();
   };
 
-  const handleMenu = (event: React.MouseEvent<HTMLElement>) => {
-    setAnchorEl(event.currentTarget);
+  const handleRedirect = (page: string) => {
+    navigate(`/${page.toLowerCase()}`);
   };
 
-  const handleClose = () => {
-    setAnchorEl(null);
+  const handleLogout = () => {
+    RTMSession.token = null;
+    setThemeMod("light");
+    navigate(`/login`);
   };
 
   return (
     <Box sx={{ flexGrow: 1 }}>
       <AppBar position="static">
         <Toolbar>
-          <div>
-            <IconButton
-              size="large"
-              aria-label="account of current user"
-              aria-controls="menu-appbar"
-              aria-haspopup="true"
-              onClick={handleMenu}
-              color="inherit"
-            >
-              <AccountCircle />
-            </IconButton>
-
-            <Menu
-              id="menu-appbar"
-              anchorEl={anchorEl}
-              anchorOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-              keepMounted
-              transformOrigin={{
-                vertical: "top",
-                horizontal: "right",
-              }}
-              open={Boolean(anchorEl)}
-              onClose={handleClose}
-            >
-              <MenuItem onClick={handleClose}>Profile</MenuItem>
-              <MenuItem onClick={handleClose}>My account</MenuItem>
-            </Menu>
-          </div>
           <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
             RTM
           </Typography>
 
-          <MenuItem>
-            <Typography color="white" textAlign="center">Reader</Typography>
+          <MenuItem onClick={() => handleRedirect("reading")}>
+            <Typography color="white" textAlign="center">
+              Reader
+            </Typography>
           </MenuItem>
-          <MenuItem>
-            <Typography color="white" textAlign="center">Library</Typography>
+          <MenuItem onClick={() => handleRedirect("library")}>
+            <Typography color="white" textAlign="center">
+              Library
+            </Typography>
           </MenuItem>
-          <MenuItem>
-            <Typography color="white" textAlign="center">User</Typography>
+          <MenuItem onClick={() => handleRedirect("user")}>
+            <Typography color="white" textAlign="center">
+              User
+            </Typography>
           </MenuItem>
-          <MenuItem>
-            <Typography color="white" textAlign="center">Logout</Typography>
+          <MenuItem onClick={() => handleLogout()}>
+            <Typography color="white" textAlign="center">
+              Logout
+            </Typography>
           </MenuItem>
 
           {/* TODO: this will show only in phone screen */}
@@ -98,7 +80,7 @@ const Navbar = () => {
         </Toolbar>
       </AppBar>
       <div className="switch-container">
-        <FormGroup>
+        <FormGroup className="switch-alignment">
           <FormControlLabel
             control={
               <Switch

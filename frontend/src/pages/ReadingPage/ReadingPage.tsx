@@ -1,9 +1,11 @@
-import React from 'react'
+import React from "react";
 
 const ReadingPage = () => {
   return (
-    <div>ReadingPage</div>
-  )
-}
+    <section className="page">
+      <div>ReadingPage</div>
+    </section>
+  );
+};
 
-export default ReadingPage
+export default ReadingPage;
