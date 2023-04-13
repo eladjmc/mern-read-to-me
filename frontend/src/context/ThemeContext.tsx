@@ -9,14 +9,16 @@ interface ThemeProviderProps {
 interface ContextProps {
   isLight: boolean;
   toggleTheme: () => void;
-  setThemeMod: (mod:string) => void;
+  setThemeMod: (mod: ThemeType) => void;
   theme: Theme;
 }
+
+type ThemeType = 'light' | 'dark';
 
 const ThemeContext = createContext<ContextProps>({
   isLight: true,
   toggleTheme: () => {},
-  setThemeMod: (mod:string) => {},
+  setThemeMod: (mod: ThemeType) => {},
   theme: lightTheme,
 });
 
@@ -25,23 +27,15 @@ const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
   const [theme, setTheme] = useState<Theme>(lightTheme);
 
   useEffect(() => {
-    if (isLight) {
-      setTheme(lightTheme);
-    } else {
-      setTheme(darkTheme);
-    }
+    setTheme(isLight ? lightTheme: darkTheme);
   }, [isLight]);
 
   const toggleTheme = () => {
     setIsLight(!isLight);
   };
 
-  const setThemeMod = (mod:string) => {
-    if(mod === 'light'){
-        setIsLight(true);
-    } else if(mod === 'dark'){
-        setIsLight(false);
-    }
+  const setThemeMod = (mod: ThemeType) => {
+    setIsLight(mod === 'light');
   };
 
 

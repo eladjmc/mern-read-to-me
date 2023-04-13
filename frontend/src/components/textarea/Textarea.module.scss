@@ -1,0 +1,17 @@
+.textarea {
+    resize: none;
+    border: none;
+    min-width: 0px;
+    outline: 0px;
+    padding: 0px;
+    padding-inline-end: var(--Textarea-paddingInline);
+    flex: 1 1 auto;
+    align-self: stretch;
+    color: inherit;
+    background-color: transparent;
+    font-family: inherit;
+    font-size: inherit;
+    font-style: inherit;
+    font-weight: inherit;
+    line-height: inherit;
+}

@@ -1,18 +1,36 @@
-import express  from "express";
+import express from "express";
+
+import {
+  currentUser,
+  getWelcome,
+  loginUser,
+  registerUser,
+  addDirectory,
+  addDocument,
+  deleteUser,
+  deleteDirectory,
+  deleteDocument,
 
 
-import { currentUser, getWelcome, loginUser, registerUser } from "../controller/usersController.js";
+} from "../controller/usersController.js";
 import { validateToken } from "../middleware/validateTokenHandler.js";
 
 const router = express.Router();
 
-router.route('/').get(getWelcome);
-router.route('/register').post(registerUser);
-router.route('/login').post(loginUser);
+// Public routes
+router.route("/").get(getWelcome);
+router.route("/register").post(registerUser);
+router.route("/login").post(loginUser);
 
-router.route('/current').get(validateToken, currentUser);
 
+// Private routes
+router.use(validateToken);
+
+router.route("/current").get(currentUser);
+router.route("/add-directory").post(addDirectory);
+router.route("/add-document").post(addDocument);
+router.route("/delete-user").delete(deleteUser);
+router.route("/delete-directory").delete(deleteDirectory);
+router.route("/delete-document").delete(deleteDocument);
 
 export default router;
-
-

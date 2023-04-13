@@ -4,13 +4,14 @@ import LoginPage from './pages/LoginPage/LoginPage';
 import ErrorPage from './pages/ErrorPage/ErrorPage';
 import WelcomePage from './pages/WelcomePage/WelcomePage';
 import { RouterProvider, createBrowserRouter } from 'react-router-dom';
-import ReadingPage from './pages/ReadingPage/ReadingPage';
+import ReaderPage from './pages/ReaderPage/ReaderPage';
 import UserLayout from './components/layout/UserLayout/UserLayout';
 import { ThemeProvider } from '@emotion/react';
 import { CssBaseline } from '@mui/material';
 import SignUp from './pages/SignUp/SignUp';
 import PrivateRoute from './auth/PrivateRoute/PrivateRoute';
 import { useGlobalTheme } from './context/ThemeContext';
+import UserPage from './pages/UserPage/UserPage';
 
 const router = createBrowserRouter([
     {
@@ -19,8 +20,12 @@ const router = createBrowserRouter([
         children: [
             { path: '/', element: <WelcomePage /> },
             {
-                path: '/reading',
-                element: <ReadingPage />,
+                path: '/reader',
+                element: <ReaderPage />,
+            },
+            {
+                path: '/user',
+                element: <UserPage />,
             },
             { path: '*', element: <ErrorPage /> },
         ],

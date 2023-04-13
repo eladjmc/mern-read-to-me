@@ -19,16 +19,14 @@
   }
   
   @media screen and (max-width: 768px) {
-    .login-page {
-      grid-template-columns: 1fr;
-      grid-template-rows: 1fr 1fr;
-    }
-  
-    .form-container {
-      order: 2;
-    }
-  
     .image-container {
-      order: 1;
+      display: none;
+    }
+
+    .login-page {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
     }
   }

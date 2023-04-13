@@ -18,7 +18,6 @@ const RTMSignUpForm = () => {
     try {
       RTMSession.token = null; // Logging in will reset the token.
       setIsLoading(true);
-      console.log(data);
       
      await USERS_API.register({
         email: data.get("email"),
