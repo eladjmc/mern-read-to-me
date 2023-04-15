@@ -1,6 +1,19 @@
 import { createTheme } from "@mui/material";
 
+const transitions = {
+  duration: {
+    shortest: 100,
+    shorter: 150,
+    short: 200,
+    standard: 250,
+    complex: 325,
+    enteringScreen: 175,
+    leavingScreen: 145,
+  },
+};
+
 export const lightTheme = createTheme({
+  transitions: {...transitions},
   palette: {
     primary: {
       main: '#5e35b1',
@@ -97,6 +110,7 @@ export const lightTheme = createTheme({
 });
 
 export const darkTheme = createTheme({
+  transitions: {...transitions},
   palette: {
     primary: {
       main: '#5e35b1',

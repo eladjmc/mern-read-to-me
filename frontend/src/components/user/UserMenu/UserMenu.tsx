@@ -9,11 +9,12 @@ import FolderOffIcon from "@mui/icons-material/FolderOff";
 import LogoutIcon from "@mui/icons-material/Logout";
 
 interface UserMenuProps {
-  handleLogout:()=>void;
+  handleLogout: () => void;
+  handleDeleteDirectories: () => void;
+  handleDeleteUser: () => void;
 }
 
-
-const UserMenu = ({handleLogout}:UserMenuProps) => {
+const UserMenu = ({ handleLogout, handleDeleteDirectories ,handleDeleteUser}: UserMenuProps) => {
   const [open, setOpen] = React.useState(false);
   const handleOpen = () => setOpen(true);
   const handleClose = () => setOpen(false);
@@ -22,12 +23,12 @@ const UserMenu = ({handleLogout}:UserMenuProps) => {
     {
       icon: <PersonRemoveIcon />,
       name: "Remove Account",
-      handleClick: handleClose,
+      handleClick: handleDeleteUser,
     },
     {
       icon: <FolderOffIcon />,
       name: "Delete All Directories",
-      handleClick: handleClose,
+      handleClick: handleDeleteDirectories,
     },
     { icon: <LogoutIcon />, name: "Logout", handleClick: handleLogout },
   ];

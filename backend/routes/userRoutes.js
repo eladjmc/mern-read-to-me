@@ -7,11 +7,6 @@ import {
   registerUser,
   addDirectory,
   addDocument,
-  deleteUser,
-  deleteDirectory,
-  deleteDocument,
-
-
 } from "../controller/usersController.js";
 import { validateToken } from "../middleware/validateTokenHandler.js";
 
@@ -29,8 +24,5 @@ router.use(validateToken);
 router.route("/current").get(currentUser);
 router.route("/add-directory").post(addDirectory);
 router.route("/add-document").post(addDocument);
-router.route("/delete-user").delete(deleteUser);
-router.route("/delete-directory").delete(deleteDirectory);
-router.route("/delete-document").delete(deleteDocument);
 
 export default router;

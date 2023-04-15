@@ -18,7 +18,7 @@ export class Api {
   }
 
   async delete<T = any>(url: string, data: T) {
-    return await this.axiosInstance.delete<T>(url);
+    return await this.axiosInstance.delete<T>(url, data ? data : undefined);
   }
   async put<T = any>(url: string, data: T) {
     return await this.handlePromiseResult(this.axiosInstance.put<T>(url, data));

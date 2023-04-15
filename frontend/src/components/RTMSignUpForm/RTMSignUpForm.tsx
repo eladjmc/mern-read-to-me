@@ -1,4 +1,4 @@
-import { Box, Button, FormLabel, Link } from "@mui/material";
+import { Box, Button, FormLabel, Link, Typography } from "@mui/material";
 import RTMTextField from "../RTMTextField/RTMTextField";
 import "./RTMSignUpForm.scss";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
@@ -18,8 +18,8 @@ const RTMSignUpForm = () => {
     try {
       RTMSession.token = null; // Logging in will reset the token.
       setIsLoading(true);
-      
-     await USERS_API.register({
+
+      await USERS_API.register({
         email: data.get("email"),
         password: data.get("password"),
         age: data.get("age"),
@@ -44,6 +44,12 @@ const RTMSignUpForm = () => {
 
   return (
     <Box component="form" onSubmit={handleSubmit}>
+      <div className="login-title">
+        <img src="assets/images/logoColoredBig.png" width={400} alt="" />
+        <Box className="small-screen">
+          <Typography variant="h3">RTM - Register</Typography>
+        </Box>
+      </div>
       <RTMTextField
         id="name"
         label="Full Name"

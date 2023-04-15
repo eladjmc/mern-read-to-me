@@ -1,32 +1,58 @@
 .login-page {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    height: 100vh;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  height: 100vh;
+  .login-title {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+img{
+  margin-bottom: 20px ;
+}
+    .small-screen{
+      display: none;
+    }
   }
-  
-  .form-container {
+}
+
+.form-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  max-width: 500px;
+  margin: 0 auto;
+  padding: 10px 10px;
+}
+
+.image-container {
+  background: url("../../../public/assets/images/loginImage.jpg") no-repeat
+    center center/cover;
+}
+
+@media screen and (max-width: 768px) {
+  .image-container {
+    display: none;
+  }
+
+  .login-page {
     display: flex;
     justify-content: center;
     align-items: center;
-    max-width: 500px;
-    margin: 0 auto;
-    padding: 10px 10px;
+    height: 100vh;
   }
-  
-  .image-container {
-        background: url("../../../public/assets/images/loginImage.jpg") no-repeat center
-        center/cover;
-  }
-  
-  @media screen and (max-width: 768px) {
-    .image-container {
-      display: none;
-    }
+}
 
-    .login-page {
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
+@media screen and (max-width: 1090px) {
+  .login-page {
+    .login-title {
+      margin-bottom: 25px;
+      img {
+        display: none;
+      }
+      .small-screen{
+        display: block;
+      }
     }
   }
+}

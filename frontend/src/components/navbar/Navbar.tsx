@@ -3,11 +3,14 @@ import * as React from "react";
 import AppBar from "@mui/material/AppBar";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
-import MenuItem from "@mui/material/MenuItem";
 import { useGlobalTheme } from "../../context/ThemeContext";
 import { useNavigate } from "react-router";
 import { RTMSession } from "../../services/RTMSession";
 import { RTMThemeSwitch } from "../RTMThemeSwitch/RTMThemeSwitch";
+import Hidden from "@mui/material/Hidden";
+import Box from "@mui/material/Box";
+import ListItem from "@mui/material/ListItem";
+import MobileNavbar from "./MobileNavbar";
 
 const Navbar = () => {
   const { toggleTheme, isLight } = useGlobalTheme();
@@ -28,54 +31,54 @@ const Navbar = () => {
     navigate(`/login`);
   };
 
+  const menuItems = [
+    { label: "Reader", onClick: () => handleRedirect("reader") },
+    { label: "Library", onClick: () => handleRedirect("library") },
+    { label: "User", onClick: () => handleRedirect("user") },
+    { label: "Logout", onClick: () => handleLogout() },
+  ];
+
   return (
     <AppBar position="static">
-    <Toolbar>
-      <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-        RTM
-      </Typography>
+      <Toolbar>
+        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
+          RTM
+        </Typography>
 
-      <div className="switch-container">
-        <RTMThemeSwitch
-          checked={!isLight}
-          onChange={handleChange}
-          aria-label="login switch"
-        />
-      </div>
+        <div className="switch-container">
+          <RTMThemeSwitch
+            checked={!isLight}
+            onChange={handleChange}
+            aria-label="login switch"
+          />
+        </div>
 
-      <MenuItem onClick={() => handleRedirect("reader")}>
-        <Typography color="white" textAlign="center">
-          Reader
-        </Typography>
-      </MenuItem>
-      <MenuItem onClick={() => handleRedirect("library")}>
-        <Typography color="white" textAlign="center">
-          Library
-        </Typography>
-      </MenuItem>
-      <MenuItem onClick={() => handleRedirect("user")}>
-        <Typography color="white" textAlign="center">
-          User
-        </Typography>
-      </MenuItem>
-      <MenuItem onClick={() => handleLogout()}>
-        <Typography color="white" textAlign="center">
-          Logout
-        </Typography>
-      </MenuItem>
+        {/* Desktop menu items */}
+        <Hidden smDown>
+          <Box display="flex" flexDirection="row">
+            {menuItems.map((item) => (
+              <ListItem
+                button
+                key={item.label}
+                onClick={item.onClick}
+                sx={{ minWidth: "auto" }}
+              >
+                <Typography color="white" textAlign="center">
+                  {item.label}
+                </Typography>
+              </ListItem>
+            ))}
+          </Box>
+        </Hidden>
 
-      {/* TODO: this will show only in phone screen */}
-      {/* <IconButton
-        size="large"
-        edge="start"
-        color="inherit"
-        aria-label="menu"
-        sx={{ mr: 2 }}
-      >
-        <MenuIcon />
-      </IconButton> */}
-    </Toolbar>
-  </AppBar>
+        {/* Mobile menu */}
+        <Hidden mdUp>
+          <MobileNavbar
+            menuItems={menuItems}
+          />
+        </Hidden>
+      </Toolbar>
+    </AppBar>
   );
 };
 

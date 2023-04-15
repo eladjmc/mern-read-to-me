@@ -12,6 +12,11 @@ import SignUp from './pages/SignUp/SignUp';
 import PrivateRoute from './auth/PrivateRoute/PrivateRoute';
 import { useGlobalTheme } from './context/ThemeContext';
 import UserPage from './pages/UserPage/UserPage';
+import LibraryPage from './pages/LibraryPage/LibraryPage';
+
+const handleLoadDocument = () => {
+
+}
 
 const router = createBrowserRouter([
     {
@@ -26,6 +31,10 @@ const router = createBrowserRouter([
             {
                 path: '/user',
                 element: <UserPage />,
+            },
+            {
+                path: '/library',
+                element: <LibraryPage handleLoadDocument={handleLoadDocument}/>,
             },
             { path: '*', element: <ErrorPage /> },
         ],

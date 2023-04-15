@@ -2,6 +2,7 @@
 class RTMSynthesis {
     private synth?: SpeechSynthesis;
     utterance: SpeechSynthesisUtterance = {} as SpeechSynthesisUtterance;
+    private utteranceActive = false;
     voices: SpeechSynthesisVoice[] = [];
     activeVoice?: SpeechSynthesisVoice;
 
@@ -15,30 +16,47 @@ class RTMSynthesis {
 
         this.handleEvents();
     }
-    
+
 
     get available(): boolean {
         return !!this.synth;
     }
 
-    readText = (text: string, onUtteranceEvent: (...args: any[]) => any) => {
+    setUtteranceVolume = (volume: number) => {
+        this.utterance.volume = volume;
+    }
+
+    readText = (text: string, onUtteranceEvent: (event: Event, ...args: any[]) => any) => {
         if (!this.synth) {
             return;
         }
-        this.utterance.rate = 2; 
+
+        this.utterance.rate = 2;
         this.utterance.text = text;
 
-        const removeEvent = () => {
-            onUtteranceEvent({type: 'stop'});
+        const removeEvent = (event: Event) => {
+            onUtteranceEvent(event);
+            this.utterance.addEventListener('start', onUtteranceEvent);
+            this.utterance.addEventListener('pause', onUtteranceEvent);
+            this.utterance.addEventListener('resume', onUtteranceEvent);
             this.utterance.removeEventListener('boundary', onUtteranceEvent);
             this.utterance.removeEventListener('end', removeEvent);
             this.utterance.removeEventListener('error', removeEvent);
+            this.utteranceActive = false;
         };
-        
+
+        this.utterance.addEventListener('start', onUtteranceEvent);
+        this.utterance.addEventListener('pause', onUtteranceEvent);
+        this.utterance.addEventListener('resume', onUtteranceEvent);
         this.utterance.addEventListener('boundary', onUtteranceEvent);
         this.utterance.addEventListener('end', removeEvent);
         this.utterance.addEventListener('error', removeEvent);
         this.synth.speak(this.utterance);
+        this.utteranceActive = true;
+    }
+
+    get isUtteranceActive(): boolean {
+        return this.utteranceActive;
     }
 
     stopReading = () => {
@@ -57,16 +75,19 @@ class RTMSynthesis {
             this.activeVoice = this.voices.find(voice => voice.default) || this.voices[0];
         });
 
-        // this.utterance.onend = this.removeBoundaryEvent;
-        // this.utterance.onerror = this.removeBoundaryEvent;
-        // this.utterance.onstart = () => console.log('start');
-        // this.utterance.onpause = () => console.log('pause');
-        // this.utterance.onresume = () => console.log('resume');
+        // this.utterance.onend = (e) => {
+        //     console.log(e);
+
+        // };
+        // this.utterance.onerror = (e) => {
+        //     console.log(e);
+
+        // };
     }
 
     removeBoundaryEvent = (event: Event) => {
         console.log(event.type);
-        
+
         this.utterance.onboundary = null;
     }
 }

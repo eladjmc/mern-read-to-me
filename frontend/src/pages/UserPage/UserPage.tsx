@@ -20,13 +20,13 @@ const UserPage = () => {
   const [isLoading, setIsLoading] = useState<boolean>(true);
   const [user, setUser] = useState<UserDetails | null>(null);
   const navigator = useNavigate();
-  const {setThemeMod} = useGlobalTheme();
+  const { setThemeMod } = useGlobalTheme();
 
   const getUserDetails = async () => {
     setIsLoading(true);
     try {
       const response = await USERS_API.getUser();
-      const data:any = response.data; // Access the data property of the response object
+      const data: any = response.data; // Access the data property of the response object
       const userDetails: UserDetails = {
         name: data.name,
         age: data.age ? data.age : 0,
@@ -34,12 +34,11 @@ const UserPage = () => {
         totalDirectories: data.directories.length,
         totalDocuments: countTotalDocuments(data.directories),
       };
-  
+
       setUser(userDetails);
     } catch (error) {
       console.error(error);
       logoutUser();
-
     } finally {
       setIsLoading(false);
     }
@@ -49,8 +48,32 @@ const UserPage = () => {
     RTMSession.token = null;
     setThemeMod("light");
     navigator(`/login`);
+  };
 
-  }
+  const handleDeleteDirectories = async () => {
+    setIsLoading(true);
+    try {
+      await USERS_API.deleteAllDirectories();
+      await getUserDetails();
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const handleDeleteUser = async () => {
+    setIsLoading(true);
+    try {
+      await USERS_API.deleteCurrentUser();
+      await logoutUser();
+    } catch (error) {
+      console.error(error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
   useEffect(() => {
     getUserDetails();
   }, []);
@@ -60,7 +83,7 @@ const UserPage = () => {
       {!isLoading && user && (
         <>
           <UserDetailsCard userDetails={user} />
-          <UserMenu handleLogout={logoutUser} />
+          <UserMenu handleLogout={logoutUser} handleDeleteDirectories={handleDeleteDirectories} handleDeleteUser={handleDeleteUser} />
         </>
       )}
       {isLoading && <div>im a loader</div>}
@@ -69,5 +92,3 @@ const UserPage = () => {
 };
 
 export default UserPage;
-
-
