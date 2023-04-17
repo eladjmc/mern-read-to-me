@@ -7,7 +7,16 @@ const ErrorPage = () => {
   const handleGoBack = () => {
     navigate("/");
   };
-
+  
+  const StyledContainer = styled(Container)({
+    display: "flex",
+    flexDirection: "column",
+    alignItems: "center",
+    justifyContent: "center",
+    gap: "2rem",
+    textAlign: "center",
+  });
+  
   return (
     <section className="page">
       <StyledContainer>
@@ -21,13 +30,5 @@ const ErrorPage = () => {
   );
 };
 
-const StyledContainer = styled(Container)({
-  display: "flex",
-  flexDirection: "column",
-  alignItems: "center",
-  justifyContent: "center",
-  gap: "2rem",
-  textAlign: "center",
-});
 
 export default ErrorPage;

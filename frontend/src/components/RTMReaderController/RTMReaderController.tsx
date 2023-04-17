@@ -1,21 +1,32 @@
 import { PropsWithChildren, useEffect, useState } from 'react';
-import { AppBar, Box, IconButton, Slider, Stack, Toolbar } from '@mui/material';
+import {
+    AppBar,
+    Box,
+    Divider,
+    IconButton,
+    Slider,
+    Stack,
+    Theme,
+    Toolbar,
+    useMediaQuery,
+} from '@mui/material';
 
 import PlayArrowRoundedIcon from '@mui/icons-material/PlayArrowRounded';
 import StopRoundedIcon from '@mui/icons-material/StopRounded';
 import PauseRoundedIcon from '@mui/icons-material/PauseRounded';
 import SkipNextRoundedIcon from '@mui/icons-material/SkipNextRounded';
 import SkipPreviousRoundedIcon from '@mui/icons-material/SkipPreviousRounded';
-import VolumeDownRoundedIcon from '@mui/icons-material/VolumeDownRounded';
-import VolumeUpRoundedIcon from '@mui/icons-material/VolumeUpRounded';
-import RTMSynthesis from '../../services/RTMSynthesis';
+import RTMDrawer from '../RTMDrawer/RTMDrawer';
+import { RTMUtteranceSettings } from '../RTMUtteranceSettings/RTMUtteranceSettings';
+import { RTMReaderVolume } from '../RTMReaderVolume/RTMReaderVolume';
 
 interface RTMReaderControllerProps {
     isPlaying: boolean;
     volumeDisabled?: boolean;
     prevDisabled?: boolean;
     nextDisabled?: boolean;
-    onVolumeChange?: (...args: any[]) => void;
+    onSettingChange?: (...args: any[]) => void;
+    onSettingsClick?: (...args: any[]) => void;
     onPlayPauseClick?: (...args: any[]) => void;
     onStopClick?: (...args: any[]) => void;
     onPrevClick?: (...args: any[]) => void;
@@ -26,22 +37,17 @@ export const RTMReaderController = ({
     isPlaying,
     ...props
 }: PropsWithChildren<RTMReaderControllerProps>) => {
-    const [volume, setVolume] = useState<number>(80);
+    const matches = useMediaQuery((theme: Theme) => theme.breakpoints.up('sm'));
 
     const renderPlayStateIcon = () => {
         const Icon = isPlaying ? PauseRoundedIcon : PlayArrowRoundedIcon;
         return <Icon fontSize='large'></Icon>;
     };
 
-    const handleVolumeChange = (event: Event, newValue: number | number[]) => {
-        setVolume(newValue as number);
-        props.onVolumeChange?.(event, newValue as number);
-    };
-
     return (
-        <AppBar position='static' color='inherit'>
-            <Toolbar sx={{ justifyContent: 'space-between' }}>
-                <Box>
+        <AppBar component='div' position='static' color='inherit'>
+            <Toolbar sx={{ justifyContent: 'space-between', overflow: 'auto' }}>
+                <Box whiteSpace='nowrap'>
                     <IconButton
                         color='inherit'
                         size='small'
@@ -74,19 +80,26 @@ export const RTMReaderController = ({
                 </Box>
 
                 <Stack
-                    minWidth={200}
-                    spacing={2}
-                    direction='row'
+                    flexDirection='row'
                     alignItems='center'
-                    justifySelf='flex-end'>
-                    <VolumeDownRoundedIcon />
-                    <Slider
-                        aria-label='Volume'
-                        value={volume}
-                        disabled={props.volumeDisabled}
-                        onChange={handleVolumeChange}
-                    />
-                    <VolumeUpRoundedIcon />
+                    justifySelf='flex-end'
+                    gap={1}>
+                    {matches && (
+                        <>
+                            <RTMReaderVolume
+                                onVolumeChange={props.onSettingChange}
+                            />
+                            <Divider
+                                orientation='vertical'
+                                variant='middle'
+                                flexItem
+                            />
+                        </>
+                    )}
+
+                    <RTMUtteranceSettings onDrawerOpenState={props.onSettingsClick}/>
+
+                    <RTMDrawer onDrawerOpenState={props.onSettingsClick}/>
                 </Stack>
             </Toolbar>
         </AppBar>

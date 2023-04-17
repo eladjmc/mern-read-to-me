@@ -1,5 +1,6 @@
 import React, { FC } from "react";
 import { Typography, Paper, Avatar, Box } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 import CakeIcon from "@mui/icons-material/Cake";
 import ScheduleIcon from "@mui/icons-material/Schedule";
 import FolderIcon from "@mui/icons-material/Folder";
@@ -29,10 +30,11 @@ const DetailRow: FC<DetailRowProps> = ({ label, value, icon }) => (
       display: "flex",
       alignItems: "center",
       textAlign: "left",
-      justifyContent:"center",
+      justifyContent: "center",
     }}
   >
     <Typography
+    component="span"
       color="textSecondary"
       sx={{ display: "flex", alignItems: "center" }}
     >
@@ -43,6 +45,8 @@ const DetailRow: FC<DetailRowProps> = ({ label, value, icon }) => (
 );
 
 const UserDetailsCard: FC<UserDetailsCardProps> = ({ userDetails }) => {
+  const theme = useTheme();
+
   const details = [
     { label: "Age", value: userDetails.age, icon: <CakeIcon /> },
     {
@@ -77,20 +81,27 @@ const UserDetailsCard: FC<UserDetailsCardProps> = ({ userDetails }) => {
           width: 104,
           height: 104,
           fontSize: 32,
-          bgcolor: "#5e35b1",
-          color: "white",
+          bgcolor: theme.palette.primary.main,
+          color: theme.palette.primary.contrastText,
           position: "absolute",
           top: -52,
           left: "50%",
           transform: "translateX(-50%)",
         }}
       />
-      <Box sx={{ textAlign: "center", paddingBottom: 2, paddingTop:5 }}>
+      <Box sx={{ textAlign: "center", paddingBottom: 2, paddingTop: 5 }}>
         <Typography variant="h5" gutterBottom>
           {userDetails.name}
         </Typography>
       </Box>
-      <Box sx={{ display: "flex", flexWrap: "wrap", justifyContent: "center" , gap:"40px"}}>
+      <Box
+        sx={{
+          display: "flex",
+          flexWrap: "wrap",
+          justifyContent: "center",
+          gap: "40px",
+        }}
+      >
         {details.map((detail) => (
           <DetailRow key={detail.label} {...detail} />
         ))}
@@ -98,5 +109,4 @@ const UserDetailsCard: FC<UserDetailsCardProps> = ({ userDetails }) => {
     </Paper>
   );
 };
-
 export default UserDetailsCard;

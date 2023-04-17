@@ -4,6 +4,7 @@ export const errorHandler = (err, req, res, next) => {
   const statusCode = res.statusCode ? res.statusCode : 500;
   const message = res.message ? res.message : err.message;
   console.log("here", err);
+  console.log("status code: ", statusCode);
   if (process.env.NODE_ENV === "development") {
     console.log(message, err.stack);
   }
@@ -19,7 +20,7 @@ export const errorHandler = (err, req, res, next) => {
       res.json({ title: "Forbidden", message: message });
       break;
     case errorType.NOT_FOUND:
-      res.json({ title: "Forbidden", message: message });
+      res.json({ title: "Not Found", message: message });
       break;
     case errorType.SERVER_ERROR:
       res.json({ title: "Server Error", message: message });

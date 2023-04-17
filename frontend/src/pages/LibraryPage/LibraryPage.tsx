@@ -1,130 +1,193 @@
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState } from "react";
 import {
-  Container,
-  Box,
-  Typography,
   Grid,
-  Card,
-  CardContent,
-  CardHeader,
-  CardActions,
-  List,
-  ListItem,
-  ListItemText,
+  CircularProgress,
+  Typography,
+  Box,
   IconButton,
-  ListItemIcon,
-  Tooltip,
-} from '@mui/material';
-import USERS_API from '../../services/usersApi';
-import DeleteIcon from '@mui/icons-material/Delete';
-import DescriptionIcon from '@mui/icons-material/Description';
-import FolderIcon from '@mui/icons-material/Folder';
-import OpenInBrowserIcon from '@mui/icons-material/OpenInBrowser';
+} from "@mui/material";
+import FolderIcon from "@mui/icons-material/Folder";
+import DeleteIcon from "@mui/icons-material/Delete";
+import USERS_API from "../../services/usersApi";
+import { useGlobalReader } from "../../context/ReaderContext";
+import { useNavigate } from "react-router";
+import "./LibraryPage.scss";
+import DirectoryDialog from "../../components/library/DirectoryDialog";
+import DeleteDirectoryConfirmation from "../../components/library/DeleteDirectoryConfirmation";
+import NoDirectoriesModal from "../../components/library/NoDirectoriesModal";
+
+interface Directory {
+  _id: string;
+  title: string;
+  documents: Document[];
+}
+interface LibraryPageProps {
+  handleLoadDocument: () => void;
+}
 
 interface Document {
   _id: string;
   title: string;
-}
-
-interface Directory {
-  title: string;
-  documents: Document[];
-}
-
-interface LibraryPageProps {
-  handleLoadDocument: (documentId: string) => void;
+  description: string;
+  text: string;
 }
 
 const LibraryPage: React.FC<LibraryPageProps> = ({ handleLoadDocument }) => {
   const [directories, setDirectories] = useState<Directory[]>([]);
+  const [isLoading, setIsLoading] = useState(false);
+  const { setCurrentText } = useGlobalReader();
+  const navigate = useNavigate();
+  const [openDialog, setOpenDialog] = useState(false);
+  const [selectedDirectory, setSelectedDirectory] = useState<Directory | null>(
+    null
+  );
+  const [deleteDialogOpen, setDeleteDialogOpen] = useState(false);
+  const [directoryToDelete, setDirectoryToDelete] = useState<string | null>(
+    null
+  );
 
-  useEffect(() => {
-    const fetchData = async () => {
-      try {
-        const fetchedDirectories: any = await USERS_API.getDirectories();
-        console.log(fetchedDirectories);
-
-        setDirectories(fetchedDirectories.data.data);
-      } catch (error) {
-        console.error('Error fetching directories:', error);
-      }
-    };
-
-    fetchData();
-  }, []);
-
-  const handleDeleteDirectory = (directoryIndex: number) => {
-    const updatedDirectories = [...directories];
-    updatedDirectories.splice(directoryIndex, 1);
-    setDirectories(updatedDirectories);
+  const handleDeleteDialogOpen = (directoryTitle: string) => {
+    setDirectoryToDelete(directoryTitle);
+    setDeleteDialogOpen(true);
   };
 
-  const handleDeleteDocument = (directoryIndex: number, documentIndex: number) => {
-    const updatedDirectories = [...directories];
-    updatedDirectories[directoryIndex].documents.splice(documentIndex, 1);
-    setDirectories(updatedDirectories);
+  const handleDeleteDialogClose = () => {
+    setDeleteDialogOpen(false);
+  };
+
+  const handleConfirmedDelete = async () => {
+    if (directoryToDelete) {
+      await deleteDirectory(directoryToDelete);
+    }
+    setDeleteDialogOpen(false);
+  };
+
+  const handleOpenDialog = (directory: Directory) => {
+    setSelectedDirectory(directory);
+    setOpenDialog(true);
+  };
+
+  const handleCloseDialog = async () => {
+    setOpenDialog(false);
+  };
+
+  useEffect(() => {
+    fetchDirectories();
+  }, []);
+
+  const fetchDirectories = async () => {
+    setIsLoading(true);
+    try {
+      const fetchedDirectories: any = await USERS_API.getDirectories();
+      console.log(fetchedDirectories);
+
+      setDirectories(fetchedDirectories.data.data);
+    } catch (error) {
+      console.error("Error fetching directories:", error);
+    } finally {
+      setIsLoading(false);
+    }
+  };
+
+  const deleteDirectory = async (directoryTitle: string) => {
+    try {
+      const result: any = await USERS_API.deleteDirectory({ directoryTitle });
+      console.log(result.data);
+      fetchDirectories();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const deleteDocument = async (documentId: string, directoryTitle: string) => {
+    try {
+      const result: any = await USERS_API.deleteDocument({
+        documentId,
+        directoryTitle,
+      });
+      console.log(result.data);
+
+      // Refresh directories after deleting a document
+      setOpenDialog(false);
+      fetchDirectories();
+    } catch (error) {
+      console.log(error);
+    }
+  };
+
+  const handlePlayDocument = (doc: Document) => {
+    setCurrentText(doc.text);
+    navigate("/reader");
   };
 
   return (
-    <Container>
-      <Box mt={4} mb={2}>
-        <Typography variant="h4">My Directories</Typography>
+    <>
+      <Box mt={3} mb={3}>
+        <Typography  variant="h2" align="center">
+          Your Library
+        </Typography>
       </Box>
-      <Grid container spacing={4}>
-        {Array.isArray(directories) &&
-          directories.map((directory, dirIndex) => (
-            <Grid item xs={12} sm={6} md={4} key={dirIndex}>
-              <Card>
-                <CardHeader
-                  title={directory.title}
-                  avatar={<FolderIcon />}
-                  action={
-                    <Tooltip title="Delete Directory">
+
+      <div className="page library-page">
+        {isLoading && (
+          <Grid container justifyContent="center">
+            <CircularProgress />
+          </Grid>
+        )}
+        {!isLoading && (
+          <Grid
+            container
+            className="grid"
+            direction="row"
+            flexWrap="wrap"
+            spacing={2}
+          >
+            {directories.map((directory, index) => (
+              <Grid minWidth="300px" item key={index}>
+                <Box textAlign="center" p={2} borderRadius={1} boxShadow={1}>
+                  <FolderIcon
+                    style={{ fontSize: "74px", cursor: "pointer" }}
+                    onClick={() => handleOpenDialog(directory)}
+                    color="primary"
+                  />
+                  <Typography
+                    variant="subtitle1"
+                    display="flex"
+                    alignItems="end"
+                    justifyContent="space-between"
+                  >
+                    {directory.title}
+                    <Box mt={1} ml={1}>
                       <IconButton
-                        edge="end"
-                        color="error"
-                        onClick={() => handleDeleteDirectory(dirIndex)}
+                        onClick={() => handleDeleteDialogOpen(directory.title)}
+                        color="inherit"
                       >
                         <DeleteIcon />
                       </IconButton>
-                    </Tooltip>
-                  }
-                />
-                <CardContent>
-                  <List>
-                    {directory.documents.map((document, docIndex) => (
-                      <ListItem key={document._id}>
-                        <ListItemIcon>
-                          <DescriptionIcon />
-                        </ListItemIcon>
-                        <ListItemText primary={document.title} />
-                        <Tooltip title="Delete Document">
-                          <IconButton
-                            edge="end"
-                            color="error"
-                            onClick={() => handleDeleteDocument(dirIndex, docIndex)}
-                          >
-                            <DeleteIcon />
-                          </IconButton>
-                        </Tooltip>
-                        <Tooltip title="Load Document">
-                          <IconButton
-                            edge="end"
-                            color="primary"
-                            onClick={() => handleLoadDocument(document._id)}
-                          >
-                            <OpenInBrowserIcon />
-                          </IconButton>
-                        </Tooltip>
-                      </ListItem>
-                    ))}
-                  </List>
-                </CardContent>
-              </Card>
-            </Grid>
-          ))}
-      </Grid>
-    </Container>
+                    </Box>
+                  </Typography>
+                </Box>
+              </Grid>
+            ))}
+          </Grid>
+        )}
+        <DirectoryDialog
+          open={openDialog}
+          onClose={handleCloseDialog}
+          directory={selectedDirectory}
+          handleLoadDocument={handlePlayDocument}
+          deleteDocument={deleteDocument}
+        />
+        <DeleteDirectoryConfirmation
+          open={deleteDialogOpen}
+          onClose={handleDeleteDialogClose}
+          onConfirm={handleConfirmedDelete}
+          title="Delete Directory"
+          message="Are you sure you want to delete this directory? All documents inside will be permanently removed."
+        />
+        <NoDirectoriesModal open={directories.length === 0 && !isLoading} />
+      </div>
+    </>
   );
 };
 

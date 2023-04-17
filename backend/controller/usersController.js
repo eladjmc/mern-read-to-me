@@ -98,72 +98,18 @@ export const currentUser = asyncHandler(async (req, res) => {
   res.json(user);
 });
 
-// @desc    Add a directory for a user
-// @route   POST /api/v1/users/add-directory
+// @desc    Delete a user
+// @route   DELETE /api/v1/users/delete-user
 // @access  private
-export const addDirectory = asyncHandler(async (req, res) => {
-  const { title } = req.body;
-  const directory = { title, documents: [] };
+export const deleteUser = asyncHandler(async (req, res) => {
+  // Find and delete the user's documents
+  await Document.deleteMany({ owner: req.user._id });
 
-  // Add the new directory to the user's directories array
-  req.user.directories.push(directory);
+  // Delete the user
+  await User.findByIdAndDelete(req.user._id);
 
-  // Save the updated user
-  await req.user.save();
-
-  // Send a success response
-  res.status(201).json({
+  res.status(200).json({
     success: true,
-    data: "Directory added successfully",
-  });
-});
-
-// @desc    Add a document to a user's directory
-// @route   POST /api/v1/users/add-document
-// @access  private
-export const addDocument = asyncHandler(async (req, res) => {
-  const { title, description, text, directoryTitle } = req.body;
-
-  if (!title || !text || !directoryTitle) {
-    res.status(400);
-    throw new Error("Required fields are missing");
-  }
-
-  // Create the document
-  const newDocument = new Document({
-    title,
-    description,
-    text,
-    owner: req.user._id,
-  });
-
-  // Save the document
-  await newDocument.save();
-
-  // Find the user directory
-  const user = await User.findById(req.user._id);
-  const directory = user.directories.find(
-    (dir) => dir.title === directoryTitle
-  );
-
-  if (!directory) {
-    res.status(404);
-    throw new Error("The specified directory was not found");
-  }
-
-  // Add the document to the user's directory
-  directory.documents.push(newDocument._id);
-  await user.save();
-
-  // Populate the documents in the directories
-  await User.findById(req.user._id).populate({
-    path: "directories.documents",
-    model: "Document",
-  });
-
-  // Send a success response
-  res.status(201).json({
-    success: true,
-    data: "Document added successfully",
+    data: "User and associated documents deleted successfully",
   });
 });

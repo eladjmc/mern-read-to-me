@@ -7,7 +7,7 @@ import { countTotalDocuments } from "../../utils/countTotalDocuments";
 import { RTMSession } from "../../services/RTMSession";
 import { useNavigate } from "react-router";
 import { useGlobalTheme } from "../../context/ThemeContext";
-
+import {  Skeleton, Stack } from "@mui/material";
 interface UserDetails {
   name: string;
   age: number;
@@ -66,7 +66,7 @@ const UserPage = () => {
     setIsLoading(true);
     try {
       await USERS_API.deleteCurrentUser();
-      await logoutUser();
+      logoutUser();
     } catch (error) {
       console.error(error);
     } finally {
@@ -83,10 +83,24 @@ const UserPage = () => {
       {!isLoading && user && (
         <>
           <UserDetailsCard userDetails={user} />
-          <UserMenu handleLogout={logoutUser} handleDeleteDirectories={handleDeleteDirectories} handleDeleteUser={handleDeleteUser} />
+          <UserMenu
+            handleLogout={logoutUser}
+            handleDeleteDirectories={handleDeleteDirectories}
+            handleDeleteUser={handleDeleteUser}
+          />
         </>
       )}
-      {isLoading && <div>im a loader</div>}
+      {isLoading && (
+        <Stack spacing={1}>
+          {/* For variant="text", adjust the height via font-size */}
+          <Skeleton variant="rectangular" sx={{ fontSize: "1rem" , animationDuration: "1s"}} />
+
+          {/* For other variants, adjust the size with `width` and `height` */}
+          <Skeleton variant="circular"  sx={{ animationDuration: "1s"}}  width={40} height={40} />
+          <Skeleton variant="rectangular" sx={{ animationDuration: "1s"}} width={210} height={60} />
+          <Skeleton variant="rounded" sx={{ animationDuration: "1s"}} width={210} height={60} />
+        </Stack>
+      )}
     </section>
   );
 };

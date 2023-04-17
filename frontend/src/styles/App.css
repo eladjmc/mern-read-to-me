@@ -3,7 +3,9 @@
 }
 
 .page {
-  padding: 7px 10px;
+  padding: 65px 10px;
+  padding-bottom: 20px;
   display: flex;
   justify-content: center;
 }
+

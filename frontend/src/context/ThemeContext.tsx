@@ -1,5 +1,6 @@
 import React, { createContext, useContext, useEffect, useState } from "react";
 import { Theme } from '@mui/material/styles';
+import { ThemeProvider as MuiThemeProvider } from '@mui/material/styles';
 import { darkTheme, lightTheme } from "../utils/ThemesStyles";
 
 interface ThemeProviderProps {
@@ -48,7 +49,7 @@ const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
         theme,
       }}
     >
-      {children}
+      <MuiThemeProvider theme={theme}>{children}</MuiThemeProvider>
     </ThemeContext.Provider>
   );
 };

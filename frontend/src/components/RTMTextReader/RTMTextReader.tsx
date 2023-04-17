@@ -4,12 +4,9 @@ import { Box, Stack } from '@mui/material';
 
 import RTMSynthesis from '../../services/RTMSynthesis';
 import { RTMReaderController } from '../RTMReaderController/RTMReaderController';
-
-const temp =
-    'Lorem Ipsum is simply dummy? text, of the printing and! typesetting industry. 3.2.1.3 Lorem Ipsum has been the industry.';
+import { useGlobalReader } from '../../context/ReaderContext';
 
 interface Reader {
-    text: string;
     parts: any[];
 }
 interface RTMMarker {
@@ -20,18 +17,20 @@ interface RTMMarker {
 const DEFAULT_MARKER = Object.freeze({ wordIndex: 0, sentenceIndex: 0 });
 
 export const RTMTextReader = () => {
-    // const textareaRef: any = useRef(null);
-    const [reader, setReader] = useState<Reader>({ text: temp, parts: [] });
+    const {currentText} = useGlobalReader();
+    const [reader, setReader] = useState<Reader>({ parts: [] });
     const [activeMarker, setActiveMarker] = useState<RTMMarker>(DEFAULT_MARKER);
     const [isReading, setIsReading] = useState(false);
 
     useEffect(() => {
+        console.log(RTMSynthesis.activeVoice?.lang);
+        
         setReading();
 
         return () => {
             RTMSynthesis.stopReading();
         };
-    }, []);
+    }, [currentText]);
 
     useEffect(() => {
         if (!isReading) {
@@ -42,9 +41,9 @@ export const RTMTextReader = () => {
     }, [isReading]);
 
     const setReading = () => {
-        const textToRead: string = reader.text.replace(/\s+/, ' ');
+        const textToRead: string = currentText.replace(/\s+/, ' ');
         const parts = parseTextParts(textToRead);
-        setReader({ text: textToRead, parts });
+        setReader({ parts });
     };
 
     const parseTextParts = (text: string): any[] => {
@@ -89,9 +88,9 @@ export const RTMTextReader = () => {
             marker.wordIndex
         );
         let sentenceBuffer = marker.wordIndex - marker.sentenceIndex;
-        const textToRead = reader.text.substring(
+        const textToRead = currentText.substring(
             pausedIdxOffset,
-            reader.text.length
+            currentText.length
         );
 
         RTMSynthesis.readText(textToRead, (event: Event) => {
@@ -119,8 +118,7 @@ export const RTMTextReader = () => {
         });
     };
 
-    const handleVolumeChange = (event: Event, volumeLevel: number) => {
-        RTMSynthesis.setUtteranceVolume(volumeLevel / 100);
+    const handleVolumeChange = () => {
         RTMSynthesis.stopReading()
         isReading && playText(activeMarker);
     };
@@ -199,7 +197,7 @@ export const RTMTextReader = () => {
         reader.parts.forEach((part, partIdx) => {
             if (part.sentenceStartIndex === activeMarker.sentenceIndex) {
                 if (preMarkersText === null) {
-                    preMarkersText = reader.text.substring(
+                    preMarkersText = currentText.substring(
                         0,
                         activeMarker.sentenceIndex
                     );
@@ -215,9 +213,9 @@ export const RTMTextReader = () => {
             } else {
                 if (preMarkersText !== null && postMarkersText === null) {
                     const lastPart = reader.parts[partIdx - 1];
-                    postMarkersText = reader.text.substring(
+                    postMarkersText = currentText.substring(
                         lastPart.wordStartIndex + lastPart.text.length + 1,
-                        reader.text.length
+                        currentText.length
                     );
                     renderParts.push(postMarkersText);
                 }
@@ -251,7 +249,8 @@ export const RTMTextReader = () => {
                 onPrevClick={handlePrevClick}
                 onNextClick={handleNextClick}
                 onStopClick={handleStopClick}
-                onVolumeChange={handleVolumeChange}
+                onSettingsClick={() => setIsReading(false)}
+                onSettingChange={handleVolumeChange}
             />
         </Stack>
     );
