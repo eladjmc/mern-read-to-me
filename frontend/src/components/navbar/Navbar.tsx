@@ -43,7 +43,7 @@ const Navbar = () => {
     <AppBar position="static">
       <Container maxWidth="xl">
         <Toolbar>
-          <Typography onClick={()=>handleRedirect("reader")} variant="h6" component="div" sx={{ flexGrow: 1, cursor:"pointer" }}>
+          <Typography onClick={()=>handleRedirect("")} variant="h6" component="div" sx={{ flexGrow: 1, cursor:"pointer" }}>
             RTM
           </Typography>
 

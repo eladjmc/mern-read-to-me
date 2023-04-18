@@ -26,15 +26,6 @@ export const RTMTextReader = () => {
     const [isReading, setIsReading] = useState(false);
 
     useEffect(() => {
-
-        setReading();
-
-        return () => {
-            RTMSynthesis.stopReading();
-        };
-    }, [currentText]);
-
-    useEffect(() => {
         if (!isReading) {
             RTMSynthesis.stopReading();
         } else {
@@ -42,10 +33,16 @@ export const RTMTextReader = () => {
         }
     }, [isReading]);
 
+    useEffect(() => {
+        setReading();
+
+        return () => {
+            RTMSynthesis.stopReading();
+        };
+    }, [currentText]);
+
     const setReading = () => {
-        const textToRead: string = currentText
-            .replace(/( )+/g, ' ')
-            .replace(/( )?\n+( )?/g, '\n');
+        const textToRead: string = currentText.replace(/( )+/g, ' ').replace(/( )?\n+( )?/g, '\n');
         const parts = parseTextParts(textToRead);
         setReader({ text: textToRead, parts });
     };
@@ -64,11 +61,7 @@ export const RTMTextReader = () => {
                 sentenceStartIndex = charIdx + 1;
             }
 
-            if (
-                !isLastIndex &&
-                isEndOfSentence &&
-                [' '].includes(text[charIdx + 1])
-            ) {
+            if (!isLastIndex && isEndOfSentence && [' '].includes(text[charIdx + 1])) {
                 // sentence
                 sentenceStartIndex = charIdx + 2;
             } else if ([' ', '\n'].includes(char) || isLastIndex) {
@@ -93,15 +86,9 @@ export const RTMTextReader = () => {
     };
 
     const playText = (marker: RTMMarker) => {
-        const pausedIdxOffset = Math.max(
-            marker.sentenceIndex,
-            marker.wordIndex
-        );
+        const pausedIdxOffset = Math.max(marker.sentenceIndex, marker.wordIndex);
         let sentenceBuffer = marker.wordIndex - marker.sentenceIndex;
-        const textToRead = reader.text.substring(
-            pausedIdxOffset,
-            reader.text.length
-        );
+        const textToRead = reader.text.substring(pausedIdxOffset, reader.text.length);
 
         RTMSynthesis.readText(textToRead, (event: Event) => {
             const { type, name, charIndex } = event as SpeechSynthesisEvent;
@@ -116,8 +103,7 @@ export const RTMTextReader = () => {
                     wordIndex,
                 }));
             } else if (name === 'sentence') {
-                const sentenceIndex =
-                    pausedIdxOffset - sentenceBuffer + charIndex;
+                const sentenceIndex = pausedIdxOffset - sentenceBuffer + charIndex;
 
                 setActiveMarker(markerState => ({
                     ...markerState,
@@ -138,11 +124,8 @@ export const RTMTextReader = () => {
             return;
         }
 
-        const partSentenceStartIndex = reader.parts.findIndex(
-            part => part.sentenceStartIndex === activeMarker.sentenceIndex
-        );
-        const prevSentencePart =
-            reader.parts[partSentenceStartIndex - 1].sentenceStartIndex;
+        const partSentenceStartIndex = reader.parts.findIndex(part => part.sentenceStartIndex === activeMarker.sentenceIndex);
+        const prevSentencePart = reader.parts[partSentenceStartIndex - 1].sentenceStartIndex;
 
         RTMSynthesis.stopReading();
         const newMarker = {
@@ -155,9 +138,7 @@ export const RTMTextReader = () => {
     };
 
     const handleNextClick = () => {
-        const nextSentencePart = reader.parts.find(
-            part => part.sentenceStartIndex > activeMarker.sentenceIndex
-        );
+        const nextSentencePart = reader.parts.find(part => part.sentenceStartIndex > activeMarker.sentenceIndex);
         if (!nextSentencePart) {
             return;
         }
@@ -181,18 +162,12 @@ export const RTMTextReader = () => {
         setIsReading(false);
     };
 
-    const getRenderMarker = (
-        part: any,
-        partIdx: number,
-        needWordMarker: boolean
-    ): ReactNode => {
+    const getRenderMarker = (part: any, partIdx: number, needWordMarker: boolean): ReactNode => {
         return (
             <span
                 key={`s-${part.sentenceStartIndex}:p-${partIdx}`}
-                style={{color: 'black'}}
-                className={
-                    needWordMarker ? styles.wordMarker : styles.sentenceMarker
-                }>
+                style={{ color: 'black' }}
+                className={needWordMarker ? styles.wordMarker : styles.sentenceMarker}>
                 {part.text}
                 &nbsp;
             </span>
@@ -202,14 +177,14 @@ export const RTMTextReader = () => {
     const getRenderFreeText = (text: string, postfix: string): ReactNode[] => {
         const result: ReactNode[] = [];
         const splitByEnters = text.split('\n');
+
         splitByEnters.forEach((slice, index) => {
-            slice &&
-                result.push(
-                    slice,
-                    splitByEnters.length === index && (
-                        <br key={index + '-' + postfix} />
-                    )
-                );
+            if (!slice) {
+                return;
+            }
+            const lastIndex = splitByEnters.length - 1 === index;
+            
+            result.push(slice, !lastIndex && <br key={index + '-' + postfix} />);
         });
         return result;
     };
@@ -224,43 +199,21 @@ export const RTMTextReader = () => {
             if (part.sentenceStartIndex === activeMarker.sentenceIndex) {
                 // Inside sentence
                 if (preMarkersText === null) {
-                    preMarkersText = reader.text.substring(
-                        0,
-                        activeMarker.sentenceIndex
-                    );
-                    renderParts.push(
-                        ...getRenderFreeText(preMarkersText, 'pre')
-                    );
+                    preMarkersText = reader.text.substring(0, activeMarker.sentenceIndex);
+                    renderParts.push(...getRenderFreeText(preMarkersText, 'pre'));
                 }
-                renderParts.push(
-                    getRenderMarker(
-                        part,
-                        partIdx,
-                        part.wordStartIndex === activeMarker.wordIndex
-                    )
-                );
+                renderParts.push(getRenderMarker(part, partIdx, part.wordStartIndex === activeMarker.wordIndex));
                 if (part.char === '\n') {
-                    renderParts.push(
-                        <br key={partIdx + '-br'} id={partIdx + '-br'} />
-                    );
+                    renderParts.push(<br key={partIdx + '-br'} id={partIdx + '-br'} />);
                 }
             } else {
                 if (preMarkersText !== null && postMarkersText === null) {
                     const lastPart = reader.parts[partIdx - 1];
-                    postMarkersText = reader.text.substring(
-                        lastPart.wordStartIndex + lastPart.text.length + 1,
-                        reader.text.length
-                    );
-                    renderParts.push(
-                        ...getRenderFreeText(postMarkersText, 'post')
-                    );
+                    postMarkersText = reader.text.substring(lastPart.wordStartIndex + lastPart.text.length + 1, reader.text.length);
+                    renderParts.push(...getRenderFreeText(postMarkersText, 'post'));
                 }
             }
         });
-
-        if (renderParts.length === 0) {
-            debugger;
-        }
 
         return renderParts;
     };
@@ -269,7 +222,7 @@ export const RTMTextReader = () => {
         <Stack direction='column' sx={{ width: 1, height: 1 }}>
             <Box flexGrow={1} height={0} overflow='auto'>
                 <Box
-                    sx={{ maxWidth:"1400px", margin:"auto",paddingTop:"30px", fontSize, direction: isRtl ? 'rtl' : 'ltr' }}
+                    sx={{ maxWidth: '1400px', margin: 'auto', paddingTop: '30px', fontSize, direction: isRtl ? 'rtl' : 'ltr' }}
                     margin={2}
                     className={styles.readerContainer}
                     position='relative'>
@@ -279,9 +232,7 @@ export const RTMTextReader = () => {
 
             <RTMReaderController
                 isPlaying={isReading}
-                onPlayPauseClick={
-                    isReading ? handlePauseClick : handlePlayClick
-                }
+                onPlayPauseClick={isReading ? handlePauseClick : handlePlayClick}
                 onPrevClick={handlePrevClick}
                 onNextClick={handleNextClick}
                 onStopClick={handleStopClick}

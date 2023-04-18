@@ -44,6 +44,12 @@ const ReaderProvider: React.FC<ReaderProviderProps> = ({ children }) => {
     const [fontSize, setFontSize] = useState<number>(getDefaultFontSize);
 
     useEffect(() => {
+        setVolumeLevel(volume);
+    }, [])
+    
+
+    useEffect(() => {
+
         RTMStorage.setItem(READER_STORAGE_KEY, {
             volume,
             isRtl,
