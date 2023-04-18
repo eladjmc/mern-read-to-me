@@ -36,7 +36,6 @@ const RTMSignUpForm = () => {
       navigate("/");
       setIsLoading(false);
     } catch (error: any) {
-      //TODO: prompt error
       setError(error.response.data.message || "Error had accrued");
       setIsLoading(false);
     }
@@ -62,7 +61,6 @@ const RTMSignUpForm = () => {
         label="Your Age"
         autoComplete="age"
         type="number"
-        autoFocus
         InputProps={{
           inputProps: {
             min: 3,
@@ -75,7 +73,6 @@ const RTMSignUpForm = () => {
         label="Email Address"
         autoComplete="email"
         required
-        autoFocus
       />
 
       <RTMTextField

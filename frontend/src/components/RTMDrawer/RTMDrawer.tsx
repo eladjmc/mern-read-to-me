@@ -24,7 +24,7 @@ interface RTMDrawerProps {
 
 const RTMDrawer = ({ onDrawerOpenState }: RTMDrawerProps) => {
   const { currentText, setCurrentText } = useGlobalReader();
-  const [drawerOpen, setDrawerOpen] = useState(false);
+  const [drawerOpen, setDrawerOpen] = useState(true);
   const [successMessage, setSuccessMessage] = useState("");
   const [createDirectoryDialogOpen, setCreateDirectoryDialogOpen] =
     useState(false);
@@ -40,6 +40,9 @@ const RTMDrawer = ({ onDrawerOpenState }: RTMDrawerProps) => {
 
   useEffect(() => {
     onDrawerOpenState?.(drawerOpen);
+    if (drawerOpen) {
+      fetchDirectories();
+    }
   }, [drawerOpen]);
 
   const fetchDirectories = async () => {
@@ -160,6 +163,9 @@ const RTMDrawer = ({ onDrawerOpenState }: RTMDrawerProps) => {
                 value={selectedDirectory}
                 onChange={(e) => setSelectedDirectory(e.target.value)}
               >
+                <MenuItem value="" disabled>
+                  Create a Directory
+                </MenuItem>
                 {directories.map((dir, index) => (
                   <MenuItem key={index} value={dir}>
                     {dir}
@@ -180,7 +186,7 @@ const RTMDrawer = ({ onDrawerOpenState }: RTMDrawerProps) => {
               sx={{ marginTop: 2 }}
               onClick={() => setSaveDocumentDialogOpen(true)}
             >
-              Save
+              Save Document
             </Button>
             <Button
               variant="outlined"
@@ -189,7 +195,7 @@ const RTMDrawer = ({ onDrawerOpenState }: RTMDrawerProps) => {
               sx={{ marginTop: 2 }}
               onClick={handlePlay}
             >
-              Play
+              Mount
             </Button>
           </>
         ) : (

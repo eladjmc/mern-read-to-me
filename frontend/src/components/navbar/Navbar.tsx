@@ -11,6 +11,7 @@ import Hidden from "@mui/material/Hidden";
 import Box from "@mui/material/Box";
 import ListItem from "@mui/material/ListItem";
 import MobileNavbar from "./MobileNavbar";
+import { Container } from "@mui/material";
 
 const Navbar = () => {
   const { toggleTheme, isLight } = useGlobalTheme();
@@ -40,44 +41,44 @@ const Navbar = () => {
 
   return (
     <AppBar position="static">
-      <Toolbar>
-        <Typography variant="h6" component="div" sx={{ flexGrow: 1 }}>
-          RTM
-        </Typography>
+      <Container maxWidth="xl">
+        <Toolbar>
+          <Typography onClick={()=>handleRedirect("reader")} variant="h6" component="div" sx={{ flexGrow: 1, cursor:"pointer" }}>
+            RTM
+          </Typography>
 
-        <div className="switch-container">
-          <RTMThemeSwitch
-            checked={!isLight}
-            onChange={handleChange}
-            aria-label="login switch"
-          />
-        </div>
+          <div className="switch-container">
+            <RTMThemeSwitch
+              checked={!isLight}
+              onChange={handleChange}
+              aria-label="login switch"
+            />
+          </div>
 
-        {/* Desktop menu items */}
-        <Hidden smDown>
-          <Box display="flex" flexDirection="row">
-            {menuItems.map((item) => (
-              <ListItem
-                button
-                key={item.label}
-                onClick={item.onClick}
-                sx={{ minWidth: "auto" }}
-              >
-                <Typography color="white" textAlign="center">
-                  {item.label}
-                </Typography>
-              </ListItem>
-            ))}
-          </Box>
-        </Hidden>
+          {/* Desktop menu items */}
+          <Hidden mdDown>
+            <Box display="flex" flexDirection="row">
+              {menuItems.map((item) => (
+                <ListItem
+                  button
+                  key={item.label}
+                  onClick={item.onClick}
+                  sx={{ minWidth: "auto" }}
+                >
+                  <Typography color="white" textAlign="center">
+                    {item.label}
+                  </Typography>
+                </ListItem>
+              ))}
+            </Box>
+          </Hidden>
 
-        {/* Mobile menu */}
-        <Hidden mdUp>
-          <MobileNavbar
-            menuItems={menuItems}
-          />
-        </Hidden>
-      </Toolbar>
+          {/* Mobile menu */}
+          <Hidden mdUp>
+            <MobileNavbar menuItems={menuItems} />
+          </Hidden>
+        </Toolbar>
+      </Container>
     </AppBar>
   );
 };

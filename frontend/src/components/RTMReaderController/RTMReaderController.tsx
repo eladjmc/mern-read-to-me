@@ -1,14 +1,12 @@
-import { PropsWithChildren, useEffect, useState } from 'react';
+import { PropsWithChildren } from 'react';
 import {
     AppBar,
     Box,
     Divider,
-    IconButton,
-    Slider,
-    Stack,
+    IconButton, Stack,
     Theme,
     Toolbar,
-    useMediaQuery,
+    useMediaQuery
 } from '@mui/material';
 
 import PlayArrowRoundedIcon from '@mui/icons-material/PlayArrowRounded';
@@ -97,9 +95,9 @@ export const RTMReaderController = ({
                         </>
                     )}
 
-                    <RTMUtteranceSettings onDrawerOpenState={props.onSettingsClick}/>
-
                     <RTMDrawer onDrawerOpenState={props.onSettingsClick}/>
+
+                    <RTMUtteranceSettings onDrawerOpenState={props.onSettingsClick}/>
                 </Stack>
             </Toolbar>
         </AppBar>

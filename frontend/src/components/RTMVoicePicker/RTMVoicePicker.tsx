@@ -35,7 +35,7 @@ export const RTMVoicePicker = () => {
                     {DEFAULT_VALUE.name}
                 </MenuItem>
                 {RTMSynthesis.voices.map((voice, idx) => (
-                    <MenuItem key={voice.name} value={voice.name}>
+                    <MenuItem key={voice.name} value={voice.name} sx={{color: voice.localService ? 'green' : 'red'}}>
                         <div title={voice.name} className={styles.voiceName}>
                             {voice.name}
                         </div>

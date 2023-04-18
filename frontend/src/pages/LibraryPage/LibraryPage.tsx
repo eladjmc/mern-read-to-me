@@ -5,6 +5,7 @@ import {
   Typography,
   Box,
   IconButton,
+  Container,
 } from "@mui/material";
 import FolderIcon from "@mui/icons-material/Folder";
 import DeleteIcon from "@mui/icons-material/Delete";
@@ -21,9 +22,7 @@ interface Directory {
   title: string;
   documents: Document[];
 }
-interface LibraryPageProps {
-  handleLoadDocument: () => void;
-}
+
 
 interface Document {
   _id: string;
@@ -32,7 +31,7 @@ interface Document {
   text: string;
 }
 
-const LibraryPage: React.FC<LibraryPageProps> = ({ handleLoadDocument }) => {
+const LibraryPage = () => {
   const [directories, setDirectories] = useState<Directory[]>([]);
   const [isLoading, setIsLoading] = useState(false);
   const { setCurrentText } = useGlobalReader();
@@ -136,6 +135,7 @@ const LibraryPage: React.FC<LibraryPageProps> = ({ handleLoadDocument }) => {
         )}
         {!isLoading && (
           <Grid
+          sx={{maxWidth:"1500px", padding: "20px"}}
             container
             className="grid"
             direction="row"
@@ -169,6 +169,7 @@ const LibraryPage: React.FC<LibraryPageProps> = ({ handleLoadDocument }) => {
                 </Box>
               </Grid>
             ))}
+            
           </Grid>
         )}
         <DirectoryDialog

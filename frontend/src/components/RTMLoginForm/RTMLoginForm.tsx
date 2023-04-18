@@ -4,11 +4,19 @@ import "./RTMLoginForm.scss";
 import { Link as RouterLink, useNavigate } from "react-router-dom";
 import USERS_API from "../../services/usersApi";
 import { RTMSession } from "../../services/RTMSession";
-import { useState } from "react";
+import { useEffect, useState } from "react";
+import { RTMStorage } from "../../services/RTMStorage";
+import { READER_STORAGE_KEY } from "../../context/ReaderContext";
 
 const RTMLoginForm = () => {
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+
+    RTMStorage.removeItem(READER_STORAGE_KEY);
+
+  }, []);
 
   const navigate = useNavigate();
   const handleSubmit = async (event: React.FormEvent<HTMLFormElement>) => {

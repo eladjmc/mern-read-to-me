@@ -1,3 +1,9 @@
 .grid {
-  justify-content: center;
+  justify-content: flex-start;
+}
+
+@media screen and (max-width: 768px) {
+  .grid {
+    justify-content: center;
+  }
 }

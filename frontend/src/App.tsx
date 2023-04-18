@@ -33,7 +33,7 @@ const router = createBrowserRouter([
       },
       {
         path: "/library",
-        element: <LibraryPage handleLoadDocument={handleLoadDocument} />,
+        element: <LibraryPage />,
       },
       { path: "*", element: <ErrorPage /> },
     ],

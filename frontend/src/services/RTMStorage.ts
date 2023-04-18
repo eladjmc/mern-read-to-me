@@ -3,7 +3,7 @@ export class RTMStorage {
     if (!value) {
       this.removeItem(key);
     }
-    value = typeof value === "string" ? JSON.stringify(value) : value;
+    value = JSON.stringify(value);
     localStorage.setItem(key, value);
   };
 

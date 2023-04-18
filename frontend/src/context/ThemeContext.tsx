@@ -2,6 +2,7 @@ import React, { createContext, useContext, useEffect, useState } from "react";
 import { Theme } from '@mui/material/styles';
 import { ThemeProvider as MuiThemeProvider } from '@mui/material/styles';
 import { darkTheme, lightTheme } from "../utils/ThemesStyles";
+import { RTMStorage } from "../services/RTMStorage";
 
 interface ThemeProviderProps {
   children: React.ReactNode;
@@ -24,10 +25,11 @@ const ThemeContext = createContext<ContextProps>({
 });
 
 const ThemeProvider: React.FC<ThemeProviderProps> = ({ children }) => {
-  const [isLight, setIsLight] = useState<boolean>(true);
+  const [isLight, setIsLight] = useState<boolean>(() => RTMStorage.getItem('theme') !== 'dark');
   const [theme, setTheme] = useState<Theme>(lightTheme);
 
   useEffect(() => {
+    RTMStorage.setItem('theme', isLight ? 'light' : 'dark');
     setTheme(isLight ? lightTheme: darkTheme);
   }, [isLight]);
 

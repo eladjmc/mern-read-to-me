@@ -1,7 +1,7 @@
 import axios, { AxiosInstance, AxiosRequestConfig } from "axios";
 
 export class Api {
-  static readonly BASE_URL = 'http://localhost:5000/api/v1/';
+  static readonly BASE_URL = 'https://rtmbackend-new.onrender.com/api/v1/';
   axiosInstance: AxiosInstance;
 
   constructor(resource: string) {

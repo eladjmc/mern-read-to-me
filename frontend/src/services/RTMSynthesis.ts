@@ -42,15 +42,11 @@ class RTMSynthesis {
     
 
     getUtteranceRate = () => {
-        console.log(this.utterance.rate);
-        
         return this.utterance.rate;
     }
 
     setUtteranceRate = (rate: number) => {        
         this.utterance.rate = Math.max(this.MIN_RATE, rate);
-        console.log(this.utterance.rate);
-        
     }
 
     readText = (text: string, onUtteranceEvent: (event: Event, ...args: any[]) => any) => {

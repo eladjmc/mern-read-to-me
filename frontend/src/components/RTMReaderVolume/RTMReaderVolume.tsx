@@ -1,22 +1,23 @@
 import { Slider, SliderProps, Stack } from "@mui/material";
 
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import VolumeDownRoundedIcon from '@mui/icons-material/VolumeDownRounded';
 import VolumeUpRoundedIcon from '@mui/icons-material/VolumeUpRounded';
 import RTMSynthesis from '../../services/RTMSynthesis';
+import { RTMStorage } from "../../services/RTMStorage";
+import { useGlobalReader } from "../../context/ReaderContext";
 
 interface RTMReaderVolumeProps extends SliderProps {
     onVolumeChange?: (...args: any[]) => void;
 }
 
 export const RTMReaderVolume = ({onVolumeChange, disabled}: RTMReaderVolumeProps) => {
-    const [volume, setVolume] = useState<number>(80);
+    const {volume, setVolumeLevel} = useGlobalReader();
 
     const handleVolumeChange = (event: Event, newValue: number | number[]) => {
-        setVolume(newValue as number);
-        RTMSynthesis.setUtteranceVolume(newValue as number / 100);
-        onVolumeChange?.(event, newValue as number);
+        setVolumeLevel(newValue as number);
+        onVolumeChange?.(volume);
     };
 
     return (<Stack
