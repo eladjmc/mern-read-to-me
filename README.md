@@ -1,4 +1,4 @@
-[![Typing SVG](https://readme-typing-svg.demolab.com?font=Roboto&weight=900&size=40&duration=3000&pause=2000&color=A849FF&center=true&width=1000&height=90&lines=Read+To+Me;MERN+Stack+App)](https://git.io/typing-svg)
+[![Typing SVG](https://readme-typing-svg.demolab.com?font=Roboto&weight=900&size=40&duration=3000&pause=2000&color=A849FF&center=true&width=1000&height=90&lines=Read+To+Me;MERN+Stack+App)](https://github.com/eladjmc/mern-read-to-me)
 
 <hr>
 
